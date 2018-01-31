@@ -1,0 +1,35 @@
+Tom Maltese
+HW 1 Problem 3
+
+The man page for sudo
+https://jlk.fjfi.cvut.cz/arch/manpages/man/core/sudo/sudo.8.en
+
+Arch Linux wiki page for sudo 
+https://wiki.archlinux.org/index.php/sudo
+
+A blog entry about sudo from linux academy
+https://linuxacademy.com/blog/linux/linux-commands-for-beginners-sudo/
+
+The sudo command allows a user to run a command with escalated (root)
+privileges.
+
+A user can only use the sudo command if they are part of the sudo(ers)
+group, as specified in /etc/sudoers
+
+In order to edit /etc/sudoers the visudo(1) command must be used.
+Users need to enter their password when running sudo. 
+
+By default, environment variables from the current shell do not get
+passed to the root shell when sudo is run. Passing the -E switch
+to sudo will make the current environment persist.
+
+Bonus
+when running sudo, any processes started vis process substitution
+will NOT be run as root:
+
+ex)
+$ sudo wpa_supplicant -i wlp2s0 -c <(wpa_passphrase ESSID PASSWD)
+
+here, wpa_passphrase will not be run by root, but rather the current
+user.
+
