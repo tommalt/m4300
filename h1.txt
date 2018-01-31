@@ -1,0 +1,48 @@
+Tom Maltese
+MTH 4300
+Prof. Ivan Matic
+HW 1
+
+The man pages for cp, mv, rm, and rmdir:
+https://jlk.fjfi.cvut.cz/arch/manpages/man/core/coreutils/cp.1.en
+https://jlk.fjfi.cvut.cz/arch/manpages/man/core/coreutils/mv.1.en
+https://jlk.fjfi.cvut.cz/arch/manpages/man/core/coreutils/rm.1.en
+https://jlk.fjfi.cvut.cz/arch/manpages/man/core/coreutils/rmdir.1.en
+
+the cp mv and rm commands all have very similar interfaces.
+
+The cp command is used to copy files and/or directories.
+it it invoked with:
+	$ cp [options] [source] [dest]
+There are multiple [options] that can be passed to control the command's
+behavior. Some common ones include:
+	-r	recursively copy directory contents
+	-n	(no-clobber) will not overwrite an existing file
+		this is useful for basic 'syncing' of directories
+Examples:
+	$ cp -nr /mnt/home/tom/music $HOME
+	Will create a directory $HOME/music if it does not exist,
+	and will copy everything there.
+	If the directory does exist, cp will only copy the files
+	if they don't already exist in the destination directory.
+
+	$ cp file.txt /usr/share/doc
+	will copy [file.txt] to the /usr/share/doc directory, and retain
+	its name (file.txt)
+
+mv is very similar to cp, except it does not copy anything. It moves files
+from one directory location to another.
+*mv is much faster than cp because it does not actually move the content
+of the files, but rather shifts around their representation in the filesystem.
+This is true only for entities on the same filesystem.
+mv can be used to rename files:
+	$ mv foo.c bar.c
+
+rm removes files from the filesystem.
+	$ rm -rf [DIR]
+forces removal of [DIR] and anything under it, recursively. use with caution.
+of course, user needs write permissions to [DIR] and the files under it.
+
+rmdir works similar to rm -r. by default, rmdir fails when passed a non-empty
+directory. this is useful if you wish to clean up empty directories
+automatically. rm is used more often than rmdir.
