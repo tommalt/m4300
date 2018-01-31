@@ -1,7 +1,6 @@
 /*
  * Tom Maltese
  * MTH 4300 - Prof. Matic. HW 2 problem 2
- * 
  */
 #include <assert.h>
 #include <ctype.h>
@@ -44,7 +43,7 @@ int explode(char *buf, char ***tokens, int *ntok, char sep)
 		int len = (int)(next - begin);
 		strncpy(*tokptr, begin, len);
 		(*tokptr)[len] = '\0';
-		begin = next;
+		begin = next + 1;
 		tokptr++;
 	}
 	return c;
@@ -69,5 +68,27 @@ int readline(FILE *f, char ***tokens, int *ntok)
 }
 int main()
 {
+	char **tokens = NULL;
+	int ntok = 0;
+	int i;
+	readline(stdin, &tokens, &ntok);
 
+	if (ntok != 4) {
+		fprintf(stderr, "Invalid input\n");
+		return 1;
+	}
+
+	int values[4];  /* 0 = m, 1 = a, 2 = b, 3 = c */
+	for (i = 0; i < 4; i++)
+		values[i] = atoi(tokens[i]);
+
+	int m = values[0], a = values[1], b = values[2], c = values[3];
+
+	int tmp;
+	for (i = 1; i < m && (tmp = ((a * i + b) % m)) != c; i++)
+		;
+	if (tmp == c)
+		printf("%d\n", i);
+	else
+		printf("There is no such x\n");
 }
