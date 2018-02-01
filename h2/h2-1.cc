@@ -87,7 +87,7 @@ void mmul(double *a, double *b,
 		matrix_row(a, r, ca, arow);
 		for (c = 0; c < cb; c++) {
 			matrix_col(b, c, rb, cb, bcol);
-			buf[r+c] = dotv(arow,bcol,2);
+			buf[(r * cb) + c] = dotv(arow,bcol, rb/*could use ca here, same thing*/);
 		}
 	}
 	memcpy(out, buf, sizeof buf);
