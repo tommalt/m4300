@@ -164,10 +164,10 @@ int main()
 	double inputs[6];
 	char **tokens = NULL;
 	int ntok = 0, nread = 0;
-	int i = 0, j = 0;
+	int i = 0;
 	do {
 		nread += readline(stdin, &tokens, &ntok);
-		for ( ; j < ntok && i < 6; j++) {
+		for (int j = 0; j < ntok && i < 6; j++) {
 			inputs[i++] = strtod(tokens[j], NULL);
 		}
 		if (nread >= 6)
