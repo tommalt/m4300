@@ -42,6 +42,10 @@ rm removes files from the filesystem.
 	$ rm -rf [DIR]
 forces removal of [DIR] and anything under it, recursively. use with caution.
 of course, user needs write permissions to [DIR] and the files under it.
+when multiple arguments are passed to rm, like: `rm [file1] [file2] [...]`
+if [file1] does not exist, the rm command will terminate without removing
+[file2] [...]. when using the -f (force) flag, rm WILL remove [file2] [...]
+even if [file1] does not exist.
 
 rmdir works similar to rm -r. by default, rmdir fails when passed a non-empty
 directory. this is useful if you wish to clean up empty directories
