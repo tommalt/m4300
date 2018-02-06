@@ -11,25 +11,36 @@ A blog entry about sudo from linux academy
 https://linuxacademy.com/blog/linux/linux-commands-for-beginners-sudo/
 
 The sudo command allows a user to run a command with escalated (root)
-privileges.
+privileges. This allows them to do things they normally are not allowed
+to do.
 
 A user can only use the sudo command if they are part of the sudo(ers)
 group, as specified in /etc/sudoers
 
-In order to edit /etc/sudoers the visudo(1) command must be used.
-Users need to enter their password when running sudo. 
+In order to edit /etc/sudoers the visudo(1) command must be used and
+must be run by the root user or someone with sudo privileges (sudo visudo).
+
+Users need to enter their password when running sudo (although this
+can be changed by editing /etc/sudoers). 
 
 By default, environment variables from the current shell do not get
 passed to the root shell when sudo is run. Passing the -E switch
 to sudo will make the current environment persist.
 
-Bonus
-when running sudo, any processes started vis process substitution
-will NOT be run as root:
+sudo allows you to run commands as other users besides root
+	$ sudo -u apache2 rm /var/www/html/index.php
 
-ex)
-$ sudo wpa_supplicant -i wlp2s0 -c <(wpa_passphrase ESSID PASSWD)
+[Bonus]
+The following command will fail:
 
-here, wpa_passphrase will not be run by root, but rather the current
-user.
+$ sudo wpa_supplicant -i wlp2s0 -c <(wpa_passphrase ESSID PASSWORDD)
 
+with something like:
+Failed to open config file '/dev/fd/63', error: No such file or directory
+
+This is because, by default, sudo closes all open file descriptors
+other than stdin, stdout, and stderr (see sudo(8), option -C)
+
+[Bonus++]
+write `Defaults insults` in /etc/sudoers for some interesting feedback
+upon typing an incorrect password.

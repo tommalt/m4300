@@ -1,13 +1,16 @@
 Tom Maltese
 MTH 4300
 Prof. Ivan Matic
-HW 1
+HW 1, problem 1
 
 The man pages for cp, mv, rm, and rmdir:
 https://jlk.fjfi.cvut.cz/arch/manpages/man/core/coreutils/cp.1.en
 https://jlk.fjfi.cvut.cz/arch/manpages/man/core/coreutils/mv.1.en
 https://jlk.fjfi.cvut.cz/arch/manpages/man/core/coreutils/rm.1.en
 https://jlk.fjfi.cvut.cz/arch/manpages/man/core/coreutils/rmdir.1.en
+
+rm 'permission denied' explained:
+https://stackoverflow.com/questions/8175697/rm-cannot-remove-permission-denied
 
 the cp mv and rm commands all have very similar interfaces.
 
@@ -17,35 +20,45 @@ it it invoked with:
 There are multiple [options] that can be passed to control the command's
 behavior. Some common ones include:
 	-r	recursively copy directory contents
-	-n	(no-clobber) will not overwrite an existing file
+	-n	(no-clobber) will not overwrite existing files
 		this is useful for basic 'syncing' of directories
 Examples:
+	# mount /dev/sda1 /mnt
 	$ cp -nr /mnt/home/tom/music $HOME
-	Will create a directory $HOME/music if it does not exist,
+	can be used to keep your music files in sync on a dual-booted system
+	this will create a directory $HOME/music if it does not exist,
 	and will copy everything there.
 	If the directory does exist, cp will only copy the files
 	if they don't already exist in the destination directory.
 
-	$ cp file.txt /usr/share/doc
-	will copy [file.txt] to the /usr/share/doc directory, and retain
-	its name (file.txt)
+	$ cp index.html /usr/share/doc
+	will copy [index.html] to the /usr/share/doc directory, and retain
+	its name (index.html)
 
-mv is very similar to cp, except it does not copy anything. It moves files
-from one directory location to another.
-*mv is much faster than cp because it does not actually move the content
+the move (mv) command is very similar to cp, except it does not copy anything.
+It moves files.
+mv is much faster than cp because it does not actually move the content
 of the files, but rather shifts around their representation in the filesystem.
 This is true only for entities on the same filesystem.
+ex:
+	$ mv dotfiles/.bashrc ~/.bashrc
+equivalently:
+	$ cd
+	$ mv dotfiles/.bashrc .
 mv can be used to rename files:
 	$ mv foo.c bar.c
 
 rm removes files from the filesystem.
 	$ rm -rf [DIR]
 forces removal of [DIR] and anything under it, recursively. use with caution.
-of course, user needs write permissions to [DIR] and the files under it.
-when multiple arguments are passed to rm, like: `rm [file1] [file2] [...]`
-if [file1] does not exist, the rm command will terminate without removing
-[file2] [...]. when using the -f (force) flag, rm WILL remove [file2] [...]
-even if [file1] does not exist.
+user needs write permissions to [DIR] but not the files under it.
+this is because removing a file is not considered writing to it, but rather
+considered as writing to/altering the directory that owns it. write permissions
+are required on the directory.
+
+if a file is write-protected (current user can not write to it) and user
+calls `rm [file]`, a prompt will ask if the user is sure about what they're doing
+using the -f switch disables this behavior.
 
 rmdir works similar to rm -r. by default, rmdir fails when passed a non-empty
 directory. this is useful if you wish to clean up empty directories
