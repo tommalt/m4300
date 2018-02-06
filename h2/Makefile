@@ -18,4 +18,4 @@ $(BUILD)/h2-3: h2-3.cc
 	ln -sf $(BUILD)/h2-3 h2-3
 clean:
 	@echo cleaning
-	@rm -f build/* h2-1
+	@rm -f build/* h2-1 h2-2 h2-3
