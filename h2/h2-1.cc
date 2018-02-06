@@ -14,15 +14,8 @@
  *       x = A^-1 b
  */
 #include <assert.h>
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-
-#define MAXLINE 256
-#define TOKENSIZE 32
-#define IFS ' '
-
+#include <iostream>
 /*
  * Inverse of a (row major) 2 by 2 matrix
  * [0] = [0,0]
@@ -92,95 +85,16 @@ void mmul(double *a, double *b,
 	}
 	memcpy(out, buf, sizeof buf);
 }
-
-/*  split a string */
-int explode(char *buf, char ***tokens, int *ntok, char sep)
-{
-	int c;
-	char *bp;
-	bp = buf;
-	if (strchr(bp,sep) == NULL)
-		return 1;
-	c = 1;
-	while (*bp)
-		if (*bp++ == sep)
-			c++;
-	if (c > *ntok) {
-		char **tmp = (char**) realloc(*tokens, c * sizeof **tokens);
-		if (tmp == NULL)
-			return 0;
-		for (int i = *ntok; i < c; i++)
-			tmp[i] = (char*) malloc(TOKENSIZE);
-		*tokens = tmp;
-		*ntok = c;
-	}
-	char *begin, *end, *next;
-	char **tokptr;
-	tokptr = *tokens;
-	begin = buf;
-	end = buf + strlen(buf);
-	while (begin < end) {
-		next = strchr(begin+1, (int)sep);
-		next = (next==NULL) ? end : next;
-		int len = (int)(next - begin);
-		strncpy(*tokptr, begin, len);
-		(*tokptr)[len] = '\0';
-		begin = next;
-		tokptr++;
-	}
-	return c;
-}
-void strremove(char *str, int (*pred)(int))
-{
-	/* pred(d) shall return true if d is to be removed, false otherwise */
-	char *d, *s;
-	for (d = s = str; (*d = *s++); d += (!pred(*d) ? 1 : 0))
-		;
-}
-void strip(char *line)
-{
-	char *back = line + (strlen(line) - 1);
-	while (back != line && !isspace(*back))
-		back--;
-	*back = '\0';
-}
-int readline(FILE *f, char ***tokens, int *ntok)
-{
-	char buf[MAXLINE];
-	int buflen;
-	fgets(buf, MAXLINE, f);
-	if ((buflen = ((int) strlen(buf)))) {
-		strip(buf);
-		return explode(buf, tokens, ntok, IFS); 
-	}
-	return 0;
-}
 int main()
 {
 	double A[4];
 	double Ainv[4];
 	double x[2];
 	double b[2];
-	double inputs[6];
-	char **tokens = NULL;
-	int ntok = 0, nread = 0;
-	int i = 0;
-	do {
-		nread += readline(stdin, &tokens, &ntok);
-		for (int j = 0; j < ntok && i < 6; j++) {
-			inputs[i++] = strtod(tokens[j], NULL);
-		}
-		if (nread >= 6)
-			goto __break;
-	} while (1);
-__break:
-	for (i = 0; i < ntok; i++)
-		free(tokens[i]);
-	free(tokens);
-
-	memcpy(A, inputs, 4 * sizeof (double));
-	memcpy(b, inputs + 4, 2 * sizeof (double));
-
+	for (int i = 0; i < 4; i++) 
+		std::cin >> A[i];
+	for (int i = 0; i < 2; i++)
+		std::cin >> b[i];
 	mat22inv(A, Ainv);
 	mmul(Ainv, b, 2, 2, 2, 1, x);
 	printf("x=%.4f\ny=%.4f\n", x[0],x[1]);
