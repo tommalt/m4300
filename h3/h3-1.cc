@@ -3,8 +3,6 @@
  * MTH4300 - Prof. Matic. HW 3 problem 1
  */
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 int d(int n)
 {
 	int i;
@@ -18,14 +16,15 @@ int d(int n)
 }
 int main()
 {
-	char buf[64];
-	fgets(buf, sizeof buf, stdin);
-	int len = (int) strlen(buf);
-	buf[len-1] = '\0';
-	int num = atoi(buf);
+	int n;
+	printf("Give me a number: ");
+	if (scanf("%d", &n) != 1) {
+		fprintf(stderr,"Invalid input\n");
+		return 1;
+	}
 	int total = 0;
 	int i;
-	for (i = 1; i <= num; i++) {
+	for (i = 1; i <= n; i++) {
 		total += d(i);
 	}
 	printf("%d\n", total);
