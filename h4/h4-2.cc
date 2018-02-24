@@ -81,16 +81,11 @@ int main()
 	readSequenceFromFile("dataForHW2.txt", &seq, &n);
 	if (!n)
 		return 1;
-	printf("total: %d\n", n);
-	for (int i = 0; i < n; i++)
-		printf("%d ", seq[i]);
-	putchar('\n');
-
 	std::ofstream out("hw2Output.txt");
 	if (!out.is_open())
 		return 1;
 	// we could create a new sequence, and use printSep, but
-	//  that is so wasteful:
+	//  that is just so wasteful:
 	int y = seq[0];
 	out << y;
 	for (int i = 1; i < n; i++) {
