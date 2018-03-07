@@ -1,0 +1,40 @@
+The output is: "1141136567666"
+
+In the function `void heavyPrinting()`, 2 objects
+`object1` `object2` are default constructed.
+this prints '11'
+
+in the expression:
+  object1 = object2
+the copy assignment operator is invoked, printing '4'
+
+`object3` is default constructed, printing '1'
+
+myFunction() is called
+`temp` is default constructed, printing '1'
+
+so far we have "11411"
+
+temp is returned from myFunction(). NRVO is
+not performed due to -fno-elide-constructors
+the expression `return temp` creates an rvalue,
+invoking the move constructor
+this prints '3'
+
+next, temp is destroyed, printing '6'
+
+we have "1141136"
+
+the rvalue `return temp` is moved into
+the result of the function call, invoking the
+move assignment operator, this prints '5' `return temp`
+is then destroyed, printing '6'
+
+we have "114113656"
+
+std::cout << "7"
+
+we have "1141136567"
+object3, 2, and 1 are destructed, printing '666'
+
+we have "1141136567666"
