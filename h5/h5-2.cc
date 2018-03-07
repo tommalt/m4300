@@ -78,6 +78,7 @@ int main()
 	Array x;
 	Array y;
 	int tmp;
+	std::cout << "Give me some numbers. -9 to stop: ";
 	while (std::cin >> tmp && tmp != -9) {
 		x.push_back(tmp);
 	}

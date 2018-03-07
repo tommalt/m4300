@@ -18,11 +18,12 @@ int f(int n)
 int main()
 {
 	int n, p, a;
+	std::cout << "Enter 3 numbers (n, p, a): ";
 	std::cin >> n >> p >> a;
 	N = &n;
 	P = &p;
 	A = &a;
-	printf("Input n : %d\n", n);
+	printf("n       : %d\n", n);
 	printf("f(n)    : %d\n", f(n));
 	printf("f(n + 1): %d\n", f(n + 1));
 }

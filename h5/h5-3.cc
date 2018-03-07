@@ -97,7 +97,7 @@ void merge_sort(int *a, int size)
 		}
 		for (int c = 0; c < size; c++)
 			a[c] = buf[c];
-		for (int c = 0; c < last_chunk; c++)
+		for (int c = 0; c < last_chunk; c++)  /* for debugging */
 			buf[c] = 0;
 	}
 	free(buf);
