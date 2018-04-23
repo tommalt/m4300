@@ -1,7 +1,7 @@
 .PHONY: clean
 
 h7-3: h7-3.cc
-	g++ h7-3.cc -std=c++14
+	g++ h7-3.cc -std=c++14 -g -ggdb
 h7-2: h7-2.cc
 	g++ h7-2.cc -std=c++14
 
