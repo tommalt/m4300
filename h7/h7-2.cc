@@ -5,9 +5,7 @@
  * Problem 2
  */
 #include <stdio.h>
-
 #include <iostream>
-#include <vector>
 
 int isprime(int n)
 {
