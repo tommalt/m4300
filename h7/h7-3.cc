@@ -1,3 +1,9 @@
+/*
+ * Tom Maltese
+ * MTH 4300
+ * Homework #7
+ * Problem 3
+ */
 #include <math.h>
 #include <stdio.h>
 #include <algorithm>
@@ -6,7 +12,6 @@
 #include <vector>
 
 static std::set<int> powers;
-
 int impl(int target, std::set<int>::reverse_iterator top, int k)
 {
 	if (top == powers.rend())
@@ -17,6 +22,8 @@ int impl(int target, std::set<int>::reverse_iterator top, int k)
 		return k;
 	if (target < 0)
 		return -1;
+	if (*top == 1)
+		return k + target;
 	std::vector<int> ks;
 	for (top++; top != powers.rend(); top++) {
 		ks.push_back(impl(target, top, k));
@@ -28,7 +35,6 @@ int impl(int target, std::set<int>::reverse_iterator top, int k)
 int minK(int n, int a)
 {
 	int max = floor(pow(n, 1.0 / (double) a));
-	printf("Max is %d\n", max);
 	while (max)
 		powers.insert(pow(max--, a));
 	auto top = powers.rbegin();
@@ -45,5 +51,5 @@ int main()
 	std::cout << "Enter [n, alpha]: ";
 	std::cin >> n >> a;
 	k = minK(n, a);
-	printf("Min K: %d\n", k);
+	printf("Min K = %d\n", k);
 }
