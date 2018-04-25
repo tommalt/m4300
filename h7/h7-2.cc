@@ -5,24 +5,37 @@
  * Problem 2
  */
 #include <stdio.h>
+#include <set>
 #include <iostream>
 
+int insert_if_prime(std::set<int> *primes, int n)
+{
+	std::set<int>::iterator it;
+	int biggest;
+
+	biggest = (*primes->rbegin()) + 2;
+	for ( ; biggest <= n; biggest += 2) {
+		int _is_prime = 1;
+		for (it = primes->begin(); it != primes->end() &&
+				(*it) * (*it) <= biggest && _is_prime; it++)
+			if (biggest % *it == 0)
+				_is_prime = 0;
+		if (_is_prime)
+			primes->insert(biggest);
+	}
+	return (primes->find(n) != primes->end()) ? 1 : 0;
+}
 int isprime(int n)
 {
-	if (n <= 1)
-		return 0;
-	else if (n <= 3)
+	static std::set<int> primes = {2, 3, 5, 7, 11};
+	if (primes.find(n) != primes.end())
 		return 1;
-	else if ((n % 2) == 0 || (n % 3) == 0)
+	if (n % 2 == 0)
 		return 0;
-	int i;
-	i = 5;
-	while (i * i <= n) {
-		if ((n % i) == 0 || (n % (i + 2)) == 0)
-			return 0;
-		i += 6;
-	}
-	return 1;
+	int biggest = *primes.rbegin();
+	if (n > biggest)
+		return insert_if_prime(&primes, n);
+	return 0;
 }
 int main()
 {
@@ -40,6 +53,8 @@ int main()
 		std::cin >> q;
 		if (q <= 0)
 			break;
+		if (!isprime(p) || !isprime(q))
+			continue;
 		p2 = p * p;
 		q2 = q * q;
 		int c = p2 + q2 + a;
@@ -48,3 +63,4 @@ int main()
 		}
 	} while (1);
 }
+
