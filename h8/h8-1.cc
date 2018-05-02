@@ -14,6 +14,8 @@
 
 #include <omp.h>
 
+#include "timer4300.cpp"
+
 int isnumeric(char c)
 {
 	return ('0' <= c) && (c <= '9');
@@ -113,25 +115,34 @@ int parallel(int *seq, int size)
 	}
 #pragma omp barrier
 
-	int count[n][10];
-	for (int i = 0; i < n; i++)
-		memset(count[i], 0, sizeof count[i]);
+	int *buffers[n];
+	int chunksize = size / n + 1;
 
 #pragma omp parallel num_threads(n)
 	{
+		Timer4300 tm(1);
+		int *buffer = (int *) calloc(10, sizeof *buffer);
 		int id = omp_get_thread_num();
-		for (int i = 0; i < size; i += n) {
-			int ix = i + id;
-			count[id][seq[ix]]++;
+		int start = chunksize * id;
+		int end = ((start + chunksize) < size) ? (start + chunksize) : size;
+		for (int i = start; i < end; i++) {
+			buffer[seq[i]]++;
 		}
+		buffers[id] = buffer;
+		tm.end();
+		printf("Thread %d time: %.4f\n", id, tm.getTime());
 	}
 #pragma omp barrier
+
 	int net[10];
 	memset(net, 0, sizeof net);
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < 10; j++) {
-			net[j] += count[i][j];
+			net[j] += buffers[i][j];
 		}
+	}
+	for (int i = 0; i < n; i++) {
+		free(buffers[i]);
 	}
 	int max, maxix;
 	max = net[0];
@@ -152,8 +163,15 @@ int main()
 	readSequenceFromFile("hw6_input.txt", &seq, &size);
 	printf("size: %d\n", size);
 
+	Timer4300 tm1(1);
 	int s = serial(seq, size);
+	tm1.end();
+	printf("Serial: %.4f\n", tm1.getTime());
+
+	Timer4300 tm2(1);
 	int p = parallel(seq, size);
+	tm2.end();
+	printf("Parallel: %.4f\n", tm2.getTime());
 
 	printf("serial, parallel: %d %d\n", s, p);
 	free(seq);
