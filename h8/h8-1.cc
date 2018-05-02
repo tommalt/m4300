@@ -12,6 +12,8 @@
 #include <sstream>
 #include <fstream>
 
+#include <omp.h>
+
 int isnumeric(char c)
 {
 	return ('0' <= c) && (c <= '9');
@@ -132,11 +134,11 @@ int parallel(int *seq, int size)
 		}
 	}
 	int max, maxix;
-	max = count[0];
+	max = net[0];
 	maxix = 0;
 	for (int i = 0; i < 10; i++) {
-		maxix = (count[i] > max) ? i : maxix;
-		max = count[maxix];
+		maxix = (net[i] > max) ? i : maxix;
+		max = net[maxix];
 	}
 	return maxix;
 }
@@ -149,4 +151,10 @@ int main()
 	size = 0;
 	readSequenceFromFile("hw6_input.txt", &seq, &size);
 	printf("size: %d\n", size);
+
+	int s = serial(seq, size);
+	int p = parallel(seq, size);
+
+	printf("serial, parallel: %d %d\n", s, p);
+	free(seq);
 }
