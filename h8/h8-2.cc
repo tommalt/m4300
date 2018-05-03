@@ -5,21 +5,6 @@
  * Problem 2
  */
 
-/*
- Description
-Use the function readSequenceFromFile that you created in homework 2 to read the sequence xx of non-negative integers from the file hw6_input.txt. (You should have downloaded the file while solving the previous problem.) The sequence xx is written to the file according to the convention we created in homework 2.
-
-Read the numbers kk and mm from the standard input. Each of the elements of the sequence x[0]x[0], x[1]x[1], ……, x[n−1]x[n−1] corresponds to one of the citizens in a country. The number nn is read from the file as explained in the homework 22. The citizens live in a circle. Hence, the first left neighbor of the citizen 00 is n−1n−1; the second from the left neighbor is n−2n−2. The first from the right neighbor of the citizen 00 is the citizen 11, and the second from the right is the citizen 22.
-
-The number x[i]x[i] is a politician for whom the citizen ii is planning to vote in the upcoming election. As you can see from the file, the politicians are represented by the numbers from the set {0,1,2,3,…,9}{0,1,2,3,…,9}.
-
-The citizens are talking about the politicians and they often change their opinions on how to vote. During each of the next mm days, each citizen looks at kk of his(/her) nearest neighbors that are located to the left and kk of the nearest neighbors that are located to the right. Then during the night, each citizen decides to change the favorite politician to the one that the majority of his/her neighbors preferred the day before (if there is a tie, a politician with the smaller id is chosen). This crazy behavior continues for mm days and nights.
-
-Find out who is going to vote for whom after mm days and mm nights. Create two functions: a non-parallel version, and a parallel one using openmp and compare their performance.
-
-Remark: Be careful when designing the algorithms: When changing the opinion of the candidate 88, you will look at the neighbor 77. However you have to keep in mind that you need to consider the value x[7]x[7] that was during the day, which could be tricky if you already changed x[7]x[7].
-*/
-
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>   /* strlen */
@@ -100,15 +85,83 @@ void printToFile(std::string filename, int *seq, int len)
 		return;
 	printSep(&file, seq, len, ' ');
 }
-int main()
+void serial(int *seq, int size, int K, int m)
 {
+	int *next;
+	int *freq;
+	next = (int *) malloc(size * sizeof *next);
+	freq = (int *) calloc(10, sizeof *freq);
+	do {
+		for (int i = 0; i < size; i++) {
+			for (int c = 1; c <= K; c++) {
+				int k;
+				k = i - c;
+				k = (k < 0) ? size + k : k;
+				freq[seq[k]]++;
+				k = i + c;
+				k = (k >= size) ? (k - size) : k;
+				freq[seq[k]]++;
+			}
+			int maxix;
+			int max;
+			maxix = 0;
+			max = freq[0];
+			for (int k = 1; k < 10; k++) {
+				maxix = (freq[k] > max) ? k : maxix;
+				max = freq[maxix];
+			}
+			/* check if there are any tie breakers */
+			for (int i = 0; i < 10; i++) {
+				if (freq[i] == max) {
+					maxix = i;
+					break;
+				}
+			}
+			next[i] = maxix;
+			memset(freq, 0, 10 * sizeof *freq);
+		}
+		memcpy(seq, next, size * sizeof *seq);
+		/* avoid doing extra work: if all the values are the same, they won't change */
+		int cmp = seq[0];
+		int i;
+		for (i = 1; i < size; i++) {
+			if (cmp != seq[i])
+				break;
+		}
+		if (i == size)
+			break;
+	} while (--m);
+	free(freq);
+	free(next);
+}
+int main(int argc, char **argv)
+{
+	if (argc < 2) {
+		printf("Usage: %s [FILE]\n", argv[0]);
+		return 1;
+	}
 	int k, m;
 	std::cout << "Enter K and M: ";
 	std::cin >> k >> m;
+	if (k <= 0) {
+		printf("K must be a positive integer\n");
+		return 1;
+	}
+	if (m <= 0) {
+		printf("M must be a positive integer\n");
+		return 1;
+	}
 
 	int *seq;
 	int size;
 	seq = NULL;
 	size = 0;
-	readSequenceFromFile("hw6_input.txt", &seq, &size);
+	readSequenceFromFile(argv[1], &seq, &size);
+
+	serial(seq, size, k, m);
+
+	printf("Voter, Politician");
+	for (int i = 0; i < size; i++) {
+		printf("%d %d\n", i, seq[i]);
+	}
 }

@@ -130,7 +130,9 @@ int parallel(int *seq, int size)
 		}
 		buffers[id] = buffer;
 		tm.end();
+#ifdef DEBUG
 		printf("Thread %d time: %.4f\n", id, tm.getTime());
+#endif
 	}
 #pragma omp barrier
 
@@ -161,17 +163,23 @@ int main()
 	seq  = NULL;
 	size = 0;
 	readSequenceFromFile("hw6_input.txt", &seq, &size);
+#ifdef DEBUG
 	printf("size: %d\n", size);
+#endif
 
 	Timer4300 tm1(1);
 	int s = serial(seq, size);
 	tm1.end();
+#ifdef DEBUG
 	printf("Serial: %.4f\n", tm1.getTime());
+#endif
 
 	Timer4300 tm2(1);
 	int p = parallel(seq, size);
 	tm2.end();
+#ifdef DEBUG
 	printf("Parallel: %.4f\n", tm2.getTime());
+#endif
 
 	printf("serial, parallel: %d %d\n", s, p);
 	free(seq);
